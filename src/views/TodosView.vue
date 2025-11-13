@@ -25,6 +25,12 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeMount, onBeforeUnmount } from 'vue';
+import { useTasksStore } from '@stores/tasks.store';
+import { useAuthStore } from '@stores/auth.store';
+import { storeToRefs } from 'pinia';
+
+const tasksStore = useTasksStore();
+const { getUserId } = storeToRefs(useAuthStore());
 
 const error = ref(false);
 const stopErrorWatch = watch(error, newError => {
@@ -36,19 +42,7 @@ const stopErrorWatch = watch(error, newError => {
 })
 
 const newTask = ref('');
-let id = 1;
-const tasks = ref([
-    {
-        id: id++, 
-        name: 'Tâche 1', 
-        completed: false
-    },
-    {
-        id: id++, 
-        name: 'Tâche 2', 
-        completed: false
-    }
-]);
+const tasks = computed(() => tasksStore.getTasks);
 const isTasksEmpty = computed(() => tasks.value.length === 0);
 
 const deleteTask = taskId => {
@@ -80,6 +74,7 @@ onMounted(() => {
 
 onBeforeMount(() => {
     console.log("beforeMount");
+    tasksStore.fetchTasks(getUserId.value);
 })
 
 onBeforeUnmount(() => {

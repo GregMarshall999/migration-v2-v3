@@ -13,16 +13,20 @@
 <script setup>
 import AuthForm from '@components/AuthForm.vue';
 import { reactive } from 'vue';
+import { useAuthStore } from '@stores/auth.store';
+
+const authStore = useAuthStore();
 
 const formData = reactive({
     identifiant: '',
     mdp: '', 
-    test: ''
+    //test: ''
 });
 
-formData.identifiant = "test"
+//formData.identifiant = "test"
 
 function login() {
     console.log("Login", formData);
+    authStore.login(formData.identifiant, formData.mdp);
 }
 </script>

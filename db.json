@@ -1,23 +1,28 @@
 {
-    "users": [
-        {
-            "id": 1, 
-            "identifiant": "Greg", 
-            "password": "test123"
-        }
-    ], 
-    "tasks": [
-        {
-            "id": 1, 
-            "userId": 1,
-            "name": "Task 1", 
-            "completed": false
-        }, 
-        {
-            "id": 2, 
-            "userId": 1,
-            "name": "Task 2", 
-            "completed": false
-        }
-    ]
+  "users": [
+    {
+      "id": 1,
+      "identifiant": "Greg",
+      "password": "test123"
+    },
+    {
+      "identifiant": "Pierre",
+      "password": "tost1234",
+      "id": 2
+    }
+  ],
+  "tasks": [
+    {
+      "id": 1,
+      "userId": 1,
+      "name": "Task 1",
+      "completed": false
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "name": "Task 2",
+      "completed": false
+    }
+  ]
 }
