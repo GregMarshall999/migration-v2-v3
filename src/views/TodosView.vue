@@ -23,66 +23,68 @@
     </div>
 </template>
 
-<script>
-var id = 1;
+<script setup>
+import { ref, computed, watch, onMounted, onBeforeMount, onBeforeUnmount } from 'vue';
 
-export default {
-    data() {
-        return {
-            tasks: [{
-                id: id++, 
-                name: 'Tâche 1', 
-                completed: false
-            },
-            {
-                id: id++, 
-                name: 'Tâche 2', 
-                completed: false
-            } 
-            ], 
-            newTask: '',
-            error: false
-        }
-    },
-    methods: {
-        deleteTask(taskId) {
-            this.tasks = this.tasks.filter(task => task.id !== taskId);
-        }, 
-        addTask() {
-            if(this.newTask.length === 0) {
-                this.error = true;
-                return;
-            }
-
-            this.tasks = [{
-                id: id++, 
-                name: this.newTask, 
-                completed: false
-            }, ...this.tasks]
-            this.newTask = '';
-        }
-    },
-    computed: {
-        isTasksEmpty() {
-            return this.tasks.length === 0;
-        }
-    },
-    watch: {
-        error(val, _) {
-            if(val) {
-                setTimeout(() => {
-                    this.error = false;
-                }, 3000);
-            }
-        }
-    },
-    mounted() {
-        var test = null;
-
-        console.log(test === undefined);
-        console.log(undefined === null);
+const error = ref(false);
+const stopErrorWatch = watch(error, newError => {
+    if(newError) {
+        setTimeout(() => {
+            error.value = false;
+        }, 3000);
     }
+})
+
+const newTask = ref('');
+let id = 1;
+const tasks = ref([
+    {
+        id: id++, 
+        name: 'Tâche 1', 
+        completed: false
+    },
+    {
+        id: id++, 
+        name: 'Tâche 2', 
+        completed: false
+    }
+]);
+const isTasksEmpty = computed(() => tasks.value.length === 0);
+
+const deleteTask = taskId => {
+    tasks.value = tasks.value.filter(task => task.id !== taskId);
 }
+
+const addTask = () => {
+    if(newTask.value.length === 0) {
+        error.value = true;
+        return;
+    }
+
+    tasks.value = [{
+        id: id++, 
+        name: newTask.value, 
+        completed: false
+    }, ...tasks.value]
+    newTask.value = '';
+}
+
+onMounted(() => {
+    console.log("mounted");
+
+    var test = null;
+
+    console.log(test === undefined);
+    console.log(undefined === null);
+})
+
+onBeforeMount(() => {
+    console.log("beforeMount");
+})
+
+onBeforeUnmount(() => {
+    stopErrorWatch();
+})
 
 </script>
 

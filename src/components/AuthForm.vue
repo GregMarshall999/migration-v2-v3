@@ -1,11 +1,11 @@
 <template>
-    <form @submit.prevent="$emit('submit', formData)" v-if="formData">
+    <form @submit.prevent="sendData">  
         <div class="form-group">
             <label>Identifiant</label>
             <input 
                 type="text" 
                 name="identifiant" 
-                v-model="formData.identifiant"
+                v-model="username"
                 placeholder="JDoe" 
             />
         </div>
@@ -15,7 +15,7 @@
             <input 
                 type="password" 
                 name="identifiant" 
-                v-model="formData.mdp"
+                v-model="password"
                 placeholder="********" 
             />
         </div>
@@ -24,13 +24,41 @@
     </form>
 </template>
 
-<script>
+<script setup>
+//TODO attempt composable factorisation
+const [username, modfiers] = defineModel('identifiant', {
+    get(value) {
+        if(modfiers.capitalize) {
+            value = value.charAt(0).toUpperCase() + value.slice(1);
+            username.value = value;
+        }
+        return value;
+    },
+    set(value) {
+        if(modfiers.capitalize) {
+            return value.charAt(0).toUpperCase() + value.slice(1);
+        }
+        return value;
+    }
+});
 
-export default {
-    props: ['formData'],
-    emits: ['submit']
+const password = defineModel('mdp');
+
+//TODO: change to model
+//const props = defineProps({
+//    formData: {
+//        type: Object, 
+//        required: true
+//    }
+//});
+
+const emits = defineEmits(['submit']);
+
+function sendData() {
+    emits('submit');
 }
 
+//console.log(props.formData);
 </script>
 
 <style scoped>

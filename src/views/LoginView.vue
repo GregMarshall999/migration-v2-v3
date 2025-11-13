@@ -1,7 +1,13 @@
 <template>
-    <AuthForm :formData="formData" @submit="login">
+    <AuthForm 
+        @submit="login"
+        v-model:identifiant.capitalize="formData.identifiant"
+        v-model:mdp="formData.mdp"
+    >
         Login
     </AuthForm>
+
+    {{ formData }}
 </template>
 
 <script setup>
@@ -17,6 +23,6 @@ const formData = reactive({
 formData.identifiant = "test"
 
 function login() {
-    console.log("Login", formData.identifiant);
+    console.log("Login", formData);
 }
 </script>

@@ -4,25 +4,16 @@
     </AuthForm>
 </template>
 
-<script>
+<script setup>
 import AuthForm from '@components/AuthForm.vue';
+import { reactive } from 'vue';
 
-export default {
-    data() {
-        return {
-            formData: {
-                identifiant: '',
-                mdp: ''
-            }
-        }
-    },
-    components: {
-        AuthForm
-    },
-    methods: {
-        register(e) {
-            console.log("Register", e);
-        }
-    }
+const formData = reactive({
+    identifiant: '',
+    mdp: ''
+});
+
+const register = e => {
+    console.log("Register", e);
 }
 </script>
