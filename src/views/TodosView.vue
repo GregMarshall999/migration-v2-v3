@@ -8,18 +8,41 @@
             v-model="newTask" 
             placeholder="Entrez une nouvelle tâche"
             @keyup.enter="addTask"
+            class="task-input"
         />
 
+        <div>
+            <p>Total de tâches: {{ tasksStore.totalTasks }}</p>
+            <p>Tâches complétées: {{ tasksStore.completedTasks.length }}</p>
+            <p>Tâches en attente: {{ tasksStore.pendingTasks.length }}</p>
+        </div>
+
         <ul v-if="!isTasksEmpty">
+            <TaskComp 
+                v-for="task in tasks" 
+                :key="task.id" 
+                :task-id="task.id" 
+                v-model="task.completed"
+            >
+                <template #task-name>
+                    {{ task.name }}
+                </template>
+            </TaskComp>
+            
+            <!-- remplacé par le composant TaskComp
             <li 
                 v-for="task in tasks" 
                 :key="task.id"
-                @click="deleteTask(task.id)"
             >
-                {{ task.name }}
+                <p @click="deleteTask(task.id)">{{ task.name }}</p>
+                <input type="checkbox" v-model="task.completed" @change="toggleCompleted(task.id, task.completed)" />
             </li>
+            -->
         </ul>
         <p v-else>La liste de tâches est vide</p>
+
+        <p>X: {{ x }}</p>
+        <p>Y: {{ y }}</p>
     </div>
 </template>
 
@@ -28,6 +51,8 @@ import { ref, computed, watch, onMounted, onBeforeMount, onBeforeUnmount } from 
 import { useTasksStore } from '@stores/tasks.store';
 import { useAuthStore } from '@stores/auth.store';
 import { storeToRefs } from 'pinia';
+import useMouse from '@composables/mouse';
+import TaskComp from '@components/TaskComp.vue';
 
 const tasksStore = useTasksStore();
 const { getUserId } = storeToRefs(useAuthStore());
@@ -55,10 +80,20 @@ const addTask = () => {
         return;
     }
 
-    tasksStore.addTask(getUserId.value, { name: newTask.value });
+    tasksStore.addTask(
+        getUserId.value, 
+        { name: newTask.value, createAt: new Date().toISOString() }
+    );
 
     newTask.value = '';
 }
+
+const toggleCompleted = (taskId, completedValue) => {
+    tasksStore.updateTask(taskId, { completed: completedValue })
+}
+
+const windowRef = ref(window);
+const { x, y } = useMouse(windowRef);
 
 onMounted(() => {
     console.log("mounted");
@@ -224,7 +259,7 @@ export default {
     align-items: center;
 }
 
-input {
+.task-input {
     width: 40%;
     height: 3em;
     border-radius: 0.5em;
@@ -233,17 +268,6 @@ input {
 ul {
     list-style: none;
     padding: 0;
-}
-
-li {
-    border: 2px solid #ccc;
-    border-radius: 1em;
-    padding: 1em 4em;
-
-    &:hover {
-        cursor: pointer;
-        background-color: #f0f0f0;
-    }
 }
 
 </style>

@@ -10,13 +10,14 @@ export const useTasksStore = defineStore('tasks', () => {
     const completedTasks = computed(() => tasks.value.filter(task => task.completed));
     const pendingTasks = computed(() => tasks.value.filter(task => !task.completed));
     const getTasks = computed(() => tasks.value);
+    const totalTasks = computed(() => tasks.value.length);
 
     const fetchTasks = async userId => {
         loading.value = true;
         error.value = null;
 
         try {
-            const t = await tasksAPI.getTasks(userId);
+            const t = await tasksAPI.getLatestTasksFirst(userId);
             tasks.value = t;
         } catch (err) {
             error.value = err.message;
@@ -53,5 +54,21 @@ export const useTasksStore = defineStore('tasks', () => {
         }
     }
 
-    return { completedTasks, pendingTasks, getTasks, fetchTasks, addTask, removeTask }
+    const updateTask = async (taskId, task) => {
+        loading.value = true;
+        error.value = null;
+
+        try {
+            const updatedTask = await tasksAPI.updateTask(taskId, task);
+            tasks.value = tasks.value.map(t => t.id === taskId ? updatedTask : t);
+            return { success: true };
+        } catch (err) {
+            error.value = err.message;
+            return { success: false, error: err.message };
+        } finally {
+            loading.value = false;
+        }
+    }
+
+    return { completedTasks, pendingTasks, totalTasks, getTasks, fetchTasks, addTask, removeTask, updateTask }
 })
