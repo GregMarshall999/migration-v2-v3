@@ -16,6 +16,17 @@ pinia.use(piniaPluginPersistedstate)
 app.use(pinia) // indiquer a vue que l'on utilise Pinia
 app.use(router)
 
+app.directive('endToast', {
+    mounted(el, binding) {
+        console.log('toast', binding.instance, el);
+
+        setTimeout(() => {
+            el.__vueParentComponent.exposed.endToast();
+            //binding.instance.endToast();
+        }, binding.value * 1000)
+    }
+});
+
 app.component('LazyToast', defineAsyncComponent(() => import('@components/ToastComp.vue')))
 
 app.mount('#app')

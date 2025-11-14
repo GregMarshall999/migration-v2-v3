@@ -1,5 +1,5 @@
 <template>
-    <LazyToast v-if="error">Veuillez entrer une valeur</LazyToast>
+    <LazyToast v-end-toast="3" v-model=error>Veuillez entrer une valeur</LazyToast>
     <div class="content">
         <h1>Mes Tâches</h1>
 
@@ -58,13 +58,13 @@ const tasksStore = useTasksStore();
 const { getUserId } = storeToRefs(useAuthStore());
 
 const error = ref(false);
-const stopErrorWatch = watch(error, newError => {
-    if(newError) {
-        setTimeout(() => {
-            error.value = false;
-        }, 3000);
-    }
-})
+//const stopErrorWatch = watch(error, newError => {
+//    if(newError) {
+//        setTimeout(() => {
+//            error.value = false;
+//        }, 3000);
+//    }
+//})
 
 const newTask = ref('');
 const tasks = computed(() => tasksStore.getTasks);

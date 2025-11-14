@@ -1,8 +1,20 @@
 <template>
-    <div class="toast">
+    <div v-if="model" class="toast">
         <p><slot>Toast Message</slot></p>
     </div>
 </template>
+
+<script setup>
+
+const model = defineModel({});
+
+const endToast = () => {
+    model.value = false;
+}
+
+defineExpose({ endToast });
+
+</script>
 
 <style scoped>
 
