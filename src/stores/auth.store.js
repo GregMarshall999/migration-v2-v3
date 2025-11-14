@@ -10,19 +10,22 @@ export const useAuthStore = defineStore('auth', () => {
     const error = ref(null);
 
     const isAuthenticated = computed(() => !!token.value && !!user.value);
-    const getUserId = computed(() => user.value.id);
+    const getUserId = computed(() => {
+        if(!user.value) return null;
+        return user.value.id
+    });
 
     const router = useRouter();
 
-    const initisalizeAuth = () => {
-        const storedUser = localStorage.getItem('user');
-        const storedToken = localStorage.getItem('token');
-
-        if(token && user) {
-            user.value = JSON.parse(storedUser);
-            token.value = storedToken;
-        }
-    }
+    //const initisalizeAuth = () => {
+    //    const storedUser = localStorage.getItem('user');
+    //    const storedToken = localStorage.getItem('token');
+    //
+    //    if(token && user) {
+    //        user.value = JSON.parse(storedUser);
+    //        token.value = storedToken;
+    //    }
+    //}
 
     const register = async (identifiant, password) => {
         loading.value = true;
@@ -58,7 +61,7 @@ export const useAuthStore = defineStore('auth', () => {
             user.value = usr;
             token.value = tkn;
 
-            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('user', JSON.stringify(user.value));
             localStorage.setItem('token', token);
 
             router.push({ name: 'todos' });
@@ -79,5 +82,11 @@ export const useAuthStore = defineStore('auth', () => {
         localStorage.removeItem('token');
     }
 
-    return { isAuthenticated, getUserId, login, logout, register }
+    return { user, token, isAuthenticated, getUserId, login, logout, register }
+}, { 
+    persist: {
+        beforeHydrate: ctx => {
+            console.log('beforeHydrate');
+        }
+    } 
 })
